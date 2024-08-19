@@ -18,7 +18,7 @@ class RouteGenerator {
         return MaterialPageRoute(
             builder: (context) => MultiBlocProvider(providers: [
                   BlocProvider(
-                    create: (context) => CartsCubit()..fetchData(),
+                    create: (context) => CartsCubit()
                   ),
                 ], child: const MyHomePage()),
             settings: settings);

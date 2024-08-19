@@ -18,6 +18,13 @@ class _MyHomePageState extends State<MyHomePage> {
   Map<String, dynamic>? _location;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    context.read<CartsCubit>()..fetchData();
+  }
+
+  @override
   void didChangeDependencies() {
     _location =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
@@ -34,10 +41,12 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             Container(
               padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25),
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(25),
+                    bottomLeft: Radius.circular(25)),
                 // color: Colors.grey
-                boxShadow: const [
+                boxShadow: [
                   BoxShadow(
                     color: Colors.white, // Shadow color
                     spreadRadius: 3, // Blur radius
@@ -86,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           borderRadius: BorderRadius.circular(25),
                           border: Border.all(color: Colors.grey)),
                       child: const Text(
-                        "Delivery is __ cheaper",
+                        "Delivery is 50% cheaper",
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -167,7 +176,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                                 shape: BoxShape.circle,
                                                 image: DecorationImage(
                                                   image: NetworkImage(
-                                                    state.cartList.carts?[index].products?[1].thumbnail ??
+                                                    state
+                                                            .cartList
+                                                            .carts?[index]
+                                                            .products?[1]
+                                                            .thumbnail ??
                                                         "",
                                                   ),
                                                   fit: BoxFit
@@ -183,9 +196,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                               width: 80,
                                               height: 40,
                                               child: Text(
-                                                state
-                                                        .cartList
-                                                        .carts?[index]
+                                                state.cartList.carts?[index]
                                                         .products?[1].title ??
                                                     "",
                                                 textAlign: TextAlign.center,
@@ -235,10 +246,12 @@ class _MyHomePageState extends State<MyHomePage> {
                         mainAxisSpacing: 12,
                       ),
                       itemBuilder: (context, index) {
-                        Product product = state.cartList.carts![index].products![1];
+                        Product product =
+                            state.cartList.carts![index].products![1];
                         return InkWell(
                           onTap: () {
-                            Navigator.of(context).pushNamed('/product',arguments: product);
+                            Navigator.of(context)
+                                .pushNamed('/product', arguments: product);
                           },
                           child: Material(
                             borderRadius: BorderRadius.circular(20),
@@ -247,14 +260,14 @@ class _MyHomePageState extends State<MyHomePage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Image.network(
-                                  state.cartList.carts![index].products![1]
+                                  state.cartList.carts?[index].products?[1]
                                           .thumbnail ??
                                       "",
                                   height: 100,
                                   width: 200,
                                 ),
                                 Text(
-                                  state.cartList.carts![index].products![1]
+                                  state.cartList.carts?[index].products?[1]
                                           .title ??
                                       "",
                                   textAlign: TextAlign.center,
@@ -264,6 +277,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                     fontSize: 18,
                                   ),
                                 ),
+                                Text(
+                                  '€ ${state.cartList.carts?[index].products?[1].price}',
+                                  textAlign: TextAlign.start,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )
                               ],
                             ),
                           ),
