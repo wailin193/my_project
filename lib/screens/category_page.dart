@@ -7,21 +7,21 @@ import 'package:my_project/cubits/carts/carts_cubit.dart';
 
 import '../models/cart_list/product.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+class Category extends StatefulWidget {
+  const Category({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<Category> createState() => _CategoryState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _CategoryState extends State<Category> with AutomaticKeepAliveClientMixin {
   Map<String, dynamic>? _location;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    context.read<CartsCubit>()..fetchData();
+    context.read<CartsCubit>().fetchData();
   }
 
   @override
@@ -33,6 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       backgroundColor: Colors.grey.shade300,
       body: SingleChildScrollView(
@@ -303,4 +304,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

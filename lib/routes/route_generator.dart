@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_project/cubits/carts/carts_cubit.dart';
-import 'package:my_project/cubits/products/product_cubit.dart';
 import 'package:my_project/screens/category_page.dart';
 import 'package:my_project/screens/product_page.dart';
 import '../screens/location_page.dart';
@@ -20,7 +19,7 @@ class RouteGenerator {
                   BlocProvider(
                     create: (context) => CartsCubit()
                   ),
-                ], child: const MyHomePage()),
+                ], child: const Category()),
             settings: settings);
       case '/product':
         return MaterialPageRoute(builder: (context) => const ProductPage(),settings: settings);
