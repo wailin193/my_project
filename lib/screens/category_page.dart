@@ -143,20 +143,20 @@ class _HomePageState extends State<HomePage>
                               "Categories",
                               style: TextStyle(fontSize: 20),
                             ),
-                            Row(
-                              children: [
-                                const Text(
-                                  "See More",
-                                  style: TextStyle(fontSize: 10),
-                                ),
-                                InkWell(
-                                  child: const Icon(
+                            InkWell(
+                              onTap: () => Navigator.of(context).pushNamed('/categories'),
+                              child: const Row(
+                                children: [
+                                  Text(
+                                    "See More",
+                                    style: TextStyle(fontSize: 10),
+                                  ),
+                                  Icon(
                                     Icons.arrow_circle_right_rounded,
                                     grade: 0.5,
-                                  ),
-                                  onTap: () => Navigator.of(context).pushNamed('/categories'),
-                                )
-                              ],
+                                  )
+                                ],
+                              ),
                             ),
                           ],
                         ),
