@@ -136,7 +136,7 @@ class _HomePageState extends State<HomePage>
                     ),
                     child: Column(
                       children: [
-                         Row(
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Text(
@@ -144,7 +144,8 @@ class _HomePageState extends State<HomePage>
                               style: TextStyle(fontSize: 20),
                             ),
                             InkWell(
-                              onTap: () => Navigator.of(context).pushNamed('/categories'),
+                              onTap: () => Navigator.of(context)
+                                  .pushNamed('/categories'),
                               child: const Row(
                                 children: [
                                   Text(
@@ -236,84 +237,115 @@ class _HomePageState extends State<HomePage>
                               return const Center(child: Text("Unknown State"));
                             }
                           },
-                        )
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Products',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            InkWell(
+                              onTap: () => Navigator.of(context).pushNamed('/productList'),
+                              child: const Row(
+                                children: [
+                                  Text(
+                                    "See More",
+                                    style: TextStyle(fontSize: 10),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_circle_right_rounded,
+                                    grade: 0.5,
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        BlocBuilder<CartsCubit, CartsState>(
+                          builder: (context, state) {
+                            if (state is CartsLoading) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            } else if (state is CartsSuccess) {
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8),
+                                child: GridView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: 6,
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 18,
+                                    mainAxisSpacing: 18,
+                                    childAspectRatio: 6 / 7,
+                                  ),
+                                  itemBuilder: (context, index) {
+                                    Product product = state
+                                        .cartList.carts![index].products![1];
+                                    return InkWell(
+                                      onTap: () {
+                                        Navigator.of(context).pushNamed(
+                                            '/product',
+                                            arguments: product);
+                                      },
+                                      child: Material(
+                                        borderRadius: BorderRadius.circular(20),
+                                        elevation: 5,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Image.network(
+                                              state.cartList.carts?[index]
+                                                      .products?[1].thumbnail ??
+                                                  "",
+                                              height: 100,
+                                              width: 200,
+                                            ),
+                                            Text(
+                                              state.cartList.carts?[index]
+                                                      .products?[1].title ??
+                                                  "",
+                                              textAlign: TextAlign.center,
+                                              maxLines: 2,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 18,
+                                              ),
+                                            ),
+                                            Text(
+                                              '€ ${state.cartList.carts?[index].products?[1].price}',
+                                              textAlign: TextAlign.start,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            } else if (state is CartsFail) {
+                              return Center(child: Text(state.error));
+                            } else {
+                              return const Center(child: Text("Unknown State"));
+                            }
+                          },
+                        ),
                       ],
                     ),
                   ),
-                )
+                ),
               ],
-            ),
-            BlocBuilder<CartsCubit, CartsState>(
-              builder: (context, state) {
-                if (state is CartsLoading) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (state is CartsSuccess) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: state.cartList.carts?.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                      ),
-                      itemBuilder: (context, index) {
-                        Product product =
-                            state.cartList.carts![index].products![1];
-                        return InkWell(
-                          onTap: () {
-                            Navigator.of(context)
-                                .pushNamed('/product', arguments: product);
-                          },
-                          child: Material(
-                            borderRadius: BorderRadius.circular(20),
-                            elevation: 5,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.network(
-                                  state.cartList.carts?[index].products?[1]
-                                          .thumbnail ??
-                                      "",
-                                  height: 100,
-                                  width: 200,
-                                ),
-                                Text(
-                                  state.cartList.carts?[index].products?[1]
-                                          .title ??
-                                      "",
-                                  textAlign: TextAlign.center,
-                                  maxLines: 2,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                                Text(
-                                  '€ ${state.cartList.carts?[index].products?[1].price}',
-                                  textAlign: TextAlign.start,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                } else if (state is CartsFail) {
-                  return Center(child: Text(state.error));
-                } else {
-                  return const Center(child: Text("Unknown State"));
-                }
-              },
             ),
           ],
         ),
