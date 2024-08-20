@@ -30,7 +30,7 @@ class _ProductPageState extends State<ProductPage> {
           shape: const CircleBorder(),
           color: Colors.white,
           child: IconButton(
-            onPressed: () => Navigator.of(context).pushNamed('/home'),
+            onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.arrow_back_ios_new),
           ),
         ),

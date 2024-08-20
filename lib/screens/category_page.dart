@@ -1,27 +1,24 @@
-// import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-// import 'package:http/http.dart' as http;
 import 'package:my_project/cubits/carts/carts_cubit.dart';
 
 import '../models/cart_list/product.dart';
 
-class Category extends StatefulWidget {
-  const Category({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<Category> createState() => _CategoryState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _CategoryState extends State<Category> with AutomaticKeepAliveClientMixin {
+class _HomePageState extends State<HomePage>
+    with AutomaticKeepAliveClientMixin {
   Map<String, dynamic>? _location;
 
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
     context.read<CartsCubit>().fetchData();
+    super.initState();
   }
 
   @override
@@ -35,6 +32,22 @@ class _CategoryState extends State<Category> with AutomaticKeepAliveClientMixin 
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart),
+            label: 'Cart',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+      ),
       backgroundColor: Colors.grey.shade300,
       body: SingleChildScrollView(
         child: Column(
@@ -123,22 +136,25 @@ class _CategoryState extends State<Category> with AutomaticKeepAliveClientMixin 
                     ),
                     child: Column(
                       children: [
-                        const Row(
+                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
+                            const Text(
                               "Categories",
                               style: TextStyle(fontSize: 20),
                             ),
                             Row(
                               children: [
-                                Text(
+                                const Text(
                                   "See More",
                                   style: TextStyle(fontSize: 10),
                                 ),
-                                Icon(
-                                  Icons.arrow_circle_right_rounded,
-                                  grade: 0.5,
+                                InkWell(
+                                  child: const Icon(
+                                    Icons.arrow_circle_right_rounded,
+                                    grade: 0.5,
+                                  ),
+                                  onTap: () => Navigator.of(context).pushNamed('/categories'),
                                 )
                               ],
                             ),

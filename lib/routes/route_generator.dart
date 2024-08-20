@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_project/cubits/carts/carts_cubit.dart';
+import 'package:my_project/cubits/products/product_cubit.dart';
 import 'package:my_project/screens/category_page.dart';
 import 'package:my_project/screens/product_page.dart';
 import '../screens/location_page.dart';
+import '../screens/show_categories_page.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -16,13 +18,18 @@ class RouteGenerator {
       case '/home':
         return MaterialPageRoute(
             builder: (context) => MultiBlocProvider(providers: [
-                  BlocProvider(
-                    create: (context) => CartsCubit()
-                  ),
-                ], child: const Category()),
+                  BlocProvider(create: (context) => CartsCubit()),
+                ], child: const HomePage()),
             settings: settings);
       case '/product':
-        return MaterialPageRoute(builder: (context) => const ProductPage(),settings: settings);
+        return MaterialPageRoute(
+            builder: (context) => const ProductPage(), settings: settings);
+      case '/categories':
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+              create: (context) => ProductCubit(),
+              child:  const ShowCategories()),
+        );
       default:
         return _errorRoute();
     }
