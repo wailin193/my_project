@@ -23,7 +23,7 @@ class _ShowCategoriesState extends State<ShowCategories> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Categories"),
-        backgroundColor: Colors.cyan[200],
+        backgroundColor: Colors.transparent,
       ),
       backgroundColor: Colors.white,
       body: BlocBuilder<CategoryCubit, CategoryState>(

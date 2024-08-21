@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_project/models/cart_list/product.dart';
+import 'package:my_project/models/product_list/product_list.dart';
 
 class ProductPage extends StatefulWidget {
   const ProductPage({super.key});
@@ -9,13 +10,23 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
-  Product? _product;
+  ProductList? _product;
+
+  double? totalPrice = 0.0;
+  double? realDiscountedValue = 0.0;
+  double? discountedTotalValue = 0.0;
 
   @override
   void didChangeDependencies() {
     if (ModalRoute.of(context)?.settings.arguments != null) {
-      _product = ModalRoute.of(context)?.settings.arguments as Product;
+      _product = ModalRoute.of(context)?.settings.arguments as ProductList;
     }
+    totalPrice = (_product?.price ?? 0) * (_product?.minimumOrderQuantity ?? 0);
+    // print(totalPrice);
+    realDiscountedValue = (totalPrice ?? 0) * ((_product?.discountPercentage ?? 0) / 100);
+    // print(realDiscountedValue);
+    discountedTotalValue = (totalPrice ?? 0) - (realDiscountedValue ?? 0);
+    // print(discountedTotalValue);
     super.didChangeDependencies();
   }
 
@@ -195,7 +206,7 @@ class _ProductPageState extends State<ProductPage> {
                                   'Quantity ',
                                 ),
                                 Text(
-                                  ('${_product?.quantity}').toString(),
+                                  ('${_product?.minimumOrderQuantity}').toString(),
                                 ),
                               ],
                             ),
@@ -219,7 +230,7 @@ class _ProductPageState extends State<ProductPage> {
                                   'Total ',
                                 ),
                                 Text(
-                                  ('€ ${_product?.total}').toString(),
+                                  ('€ ${totalPrice?.toStringAsFixed(2)}').toString(),
                                 ),
                               ],
                             ),
@@ -243,7 +254,7 @@ class _ProductPageState extends State<ProductPage> {
                                   'Discounted Total ',
                                 ),
                                 Text(
-                                  ('€ ${_product?.discountedTotal}')
+                                  ('€ ${discountedTotalValue?.toStringAsFixed(2)}')
                                       .toString(),
                                 ),
                               ],

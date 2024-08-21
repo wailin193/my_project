@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_project/cubits/carts/carts_cubit.dart';
-import 'package:my_project/models/cart_list/product.dart';
+import 'package:my_project/cubits/products/product_cubit.dart';
 
-class ProuctListPage extends StatefulWidget {
-  const ProuctListPage({super.key});
+import '../models/product_list/product_list.dart';
+
+class ProductListPage extends StatefulWidget {
+  const ProductListPage({super.key});
 
   @override
-  State<ProuctListPage> createState() => _ProuctListPageState();
+  State<ProductListPage> createState() => _ProductListPageState();
 }
 
-class _ProuctListPageState extends State<ProuctListPage> {
+class _ProductListPageState extends State<ProductListPage> {
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    context.read<CartsCubit>().fetchData();
+    context.read<ProductCubit>().fetchProduct();
   }
 
   @override
@@ -28,19 +30,19 @@ class _ProuctListPageState extends State<ProuctListPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            BlocBuilder<CartsCubit, CartsState>(
+            BlocBuilder<ProductCubit, ProductState>(
               builder: (context, state) {
-                if (state is CartsLoading) {
+                if (state is ProductLoading) {
                   return const Center(
                     child: CircularProgressIndicator(),
                   );
-                } else if (state is CartsSuccess) {
+                } else if (state is ProductSuccess) {
                   return Padding(
                     padding: const EdgeInsets.all(15),
                     child: GridView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: state.cartList.carts?.length,
+                      itemCount: state.productMain.products?.length,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
@@ -49,8 +51,8 @@ class _ProuctListPageState extends State<ProuctListPage> {
                         childAspectRatio: 6 / 7,
                       ),
                       itemBuilder: (context, index) {
-                        Product product =
-                            state.cartList.carts![index].products![1];
+                        ProductList? product =
+                            state.productMain.products?[index];
                         return InkWell(
                           onTap: () {
                             Navigator.of(context)
@@ -63,14 +65,14 @@ class _ProuctListPageState extends State<ProuctListPage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Image.network(
-                                  state.cartList.carts?[index].products?[1]
+                                  state.productMain.products?[index]
                                           .thumbnail ??
                                       "",
                                   height: 100,
                                   width: 200,
                                 ),
                                 Text(
-                                  state.cartList.carts?[index].products?[1]
+                                  state.productMain.products?[index]
                                           .title ??
                                       "",
                                   textAlign: TextAlign.center,
@@ -81,7 +83,7 @@ class _ProuctListPageState extends State<ProuctListPage> {
                                   ),
                                 ),
                                 Text(
-                                  '€ ${state.cartList.carts?[index].products?[1].price}',
+                                  '€ ${state.productMain.products?[index].price}',
                                   textAlign: TextAlign.start,
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
@@ -94,7 +96,7 @@ class _ProuctListPageState extends State<ProuctListPage> {
                       },
                     ),
                   );
-                } else if (state is CartsFail) {
+                } else if (state is ProductFail) {
                   return Center(child: Text(state.error));
                 } else {
                   return const Center(child: Text("Unknown State"));

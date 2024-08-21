@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_project/cubits/carts/carts_cubit.dart';
-
-import '../models/cart_list/product.dart';
+import 'package:my_project/cubits/category/category_cubit.dart';
+import 'package:my_project/cubits/products/product_cubit.dart';
+import 'package:my_project/models/product_list/product_list.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,7 +17,9 @@ class _HomePageState extends State<HomePage>
 
   @override
   void initState() {
-    context.read<CartsCubit>().fetchData();
+    // context.read<CartsCubit>().fetchData();
+    context.read<CategoryCubit>().fetchCategory();
+    context.read<ProductCubit>().fetchProduct();
     super.initState();
   }
 
@@ -161,77 +163,44 @@ class _HomePageState extends State<HomePage>
                             ),
                           ],
                         ),
-                        BlocBuilder<CartsCubit, CartsState>(
+                        BlocBuilder<CategoryCubit, CategoryState>(
                           builder: (context, state) {
-                            if (state is CartsLoading) {
+                            if (state is CategoryLoading) {
                               return const Center(
                                 child: CircularProgressIndicator(),
                               );
-                            } else if (state is CartsSuccess) {
+                            } else if (state is CategorySuccess) {
                               return Container(
-                                height: 150,
+                                height: 80,
                                 decoration: const BoxDecoration(
                                   // boxShadow: ,
                                   color: Colors.white,
                                 ),
-                                child: ListView.builder(
+                                child: GridView.builder(
+                                  itemCount: state.categoryList.length,
                                   scrollDirection: Axis.horizontal,
-                                  itemCount: 20,
-                                  itemBuilder: (context, index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.all(5),
-                                      child: Material(
-                                        // borderRadius: BorderRadius.circular(100),
-                                        // elevation: 5,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                              width: 60,
-                                              height: 60,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                image: DecorationImage(
-                                                  image: NetworkImage(
-                                                    state
-                                                            .cartList
-                                                            .carts?[index]
-                                                            .products?[1]
-                                                            .thumbnail ??
-                                                        "",
-                                                  ),
-                                                  fit: BoxFit
-                                                      .cover, // Ensures the image covers the entire circle
-                                                ),
-                                                color: Colors.grey[200],
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: 15,
-                                            ),
-                                            SizedBox(
-                                              width: 80,
-                                              height: 40,
-                                              child: Text(
-                                                state.cartList.carts?[index]
-                                                        .products?[1].title ??
-                                                    "",
-                                                textAlign: TextAlign.center,
-                                                maxLines: 2,
-                                                style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 10),
-                                              ),
-                                            )
-                                          ],
+                                  padding: const EdgeInsets.all(15),
+                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 1,
+                                    mainAxisSpacing: 5,
+                                    crossAxisSpacing: 12,
+                                    childAspectRatio: 1/3,
+                                  ),
+                                  itemBuilder: (BuildContext context, int index) {
+                                    return Material(
+                                      color: Colors.grey[200],
+                                      borderRadius: BorderRadius.circular(25),
+                                      child: Center(
+                                        child: Text(
+                                          state.categoryList[index] ?? '',
+                                          textAlign: TextAlign.center,
                                         ),
                                       ),
                                     );
                                   },
-                                ),
+                                )
                               );
-                            } else if (state is CartsFail) {
+                            } else if (state is CategoryFail) {
                               return const Center(child: Text("Error"));
                             } else {
                               return const Center(child: Text("Unknown State"));
@@ -265,13 +234,13 @@ class _HomePageState extends State<HomePage>
                             ),
                           ],
                         ),
-                        BlocBuilder<CartsCubit, CartsState>(
+                        BlocBuilder<ProductCubit, ProductState>(
                           builder: (context, state) {
-                            if (state is CartsLoading) {
+                            if (state is ProductLoading) {
                               return const Center(
                                 child: CircularProgressIndicator(),
                               );
-                            } else if (state is CartsSuccess) {
+                            } else if (state is ProductSuccess) {
                               return Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 8),
@@ -287,8 +256,7 @@ class _HomePageState extends State<HomePage>
                                     childAspectRatio: 6 / 7,
                                   ),
                                   itemBuilder: (context, index) {
-                                    Product product = state
-                                        .cartList.carts![index].products![1];
+                                    ProductList? product = state.productMain.products![index];
                                     return InkWell(
                                       onTap: () {
                                         Navigator.of(context).pushNamed(
@@ -303,25 +271,23 @@ class _HomePageState extends State<HomePage>
                                               MainAxisAlignment.center,
                                           children: [
                                             Image.network(
-                                              state.cartList.carts?[index]
-                                                      .products?[1].thumbnail ??
+                                              state.productMain.products?[index].thumbnail ??
                                                   "",
                                               height: 100,
                                               width: 200,
                                             ),
                                             Text(
-                                              state.cartList.carts?[index]
-                                                      .products?[1].title ??
+                                              state.productMain.products?[index].title ??
                                                   "",
                                               textAlign: TextAlign.center,
                                               maxLines: 2,
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 18,
+                                                fontSize: 15,
                                               ),
                                             ),
                                             Text(
-                                              '€ ${state.cartList.carts?[index].products?[1].price}',
+                                              '€ ${state.productMain.products?[index].price.toString()}',
                                               textAlign: TextAlign.start,
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.bold,
@@ -329,12 +295,11 @@ class _HomePageState extends State<HomePage>
                                             )
                                           ],
                                         ),
-                                      ),
-                                    );
+                                    ));
                                   },
                                 ),
                               );
-                            } else if (state is CartsFail) {
+                            } else if (state is ProductFail) {
                               return Center(child: Text(state.error));
                             } else {
                               return const Center(child: Text("Unknown State"));

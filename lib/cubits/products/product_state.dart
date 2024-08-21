@@ -8,8 +8,9 @@ class ProductInitial extends ProductState {}
 class ProductLoading extends ProductState {}
 
 class ProductSuccess extends ProductState {
-  ProductList productList;
-  ProductSuccess(this.productList);
+  ProductMain productMain;
+
+  ProductSuccess(this.productMain);
 }
 
 class ProductFail extends ProductState {

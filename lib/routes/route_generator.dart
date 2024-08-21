@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_project/cubits/carts/carts_cubit.dart';
 import 'package:my_project/cubits/category/category_cubit.dart';
-import 'package:my_project/screens/category_page.dart';
+import 'package:my_project/cubits/products/product_cubit.dart';
+import 'package:my_project/screens/home_page.dart';
 import 'package:my_project/screens/product_page.dart';
 import '../screens/location_page.dart';
 import '../screens/product_list_page.dart';
@@ -18,24 +19,25 @@ class RouteGenerator {
             builder: (context) => const SelectLocation(), settings: settings);
       case '/home':
         return MaterialPageRoute(
-            builder: (context) =>
-                MultiBlocProvider(providers: [
-                  BlocProvider(create: (context) => CartsCubit()),
+            builder: (context) => MultiBlocProvider(providers: [
+                  BlocProvider(create: (context) => CategoryCubit()),
+                  BlocProvider(create: (context) => ProductCubit()),
                 ], child: const HomePage()),
             settings: settings);
       case '/product':
         return MaterialPageRoute(
             builder: (context) => const ProductPage(), settings: settings);
       case '/productList':
-        return MaterialPageRoute(builder: (context) {
-          return BlocProvider(create: (context) => CartsCubit(),child: const ProuctListPage(),);
-        },);
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+              create: (context) => ProductCubit(),
+              child: const ProductListPage()),
+        );
       case '/categories':
         return MaterialPageRoute(
-          builder: (context) =>
-              BlocProvider(
-                  create: (context) => CategoryCubit(),
-                  child: const ShowCategories()),
+          builder: (context) => BlocProvider(
+              create: (context) => CategoryCubit(),
+              child: const ShowCategories()),
         );
       default:
         return _errorRoute();
